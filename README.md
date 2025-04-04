@@ -1,73 +1,119 @@
-# Welcome to your Lovable project
+# Code Scribe
 
-## Project info
+![Code Scribe Logo](https://path/to/logo.png)
 
-**URL**: https://lovable.dev/projects/20063083-9fe5-40f1-b22a-f443ed11886c
+## Description
 
-## How can I edit this code?
+Code Scribe is an innovative tool designed to automate the generation of code documentation, enhancing code comprehension and streamlining the development process. By analyzing source code, Code Scribe produces clear, structured documentation, reducing the need for manual documentation efforts.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **Automated Documentation Generation:** Processes source code to generate comprehensive documentation, aiding developers in understanding code functionality without extensive manual documentation.
+- **AI Integration:** Utilizes advanced AI models to offer features such as code comments and function documentation, accessible through an OpenAI access token.
+- **Cross-Platform Availability:** Available as a command-line tool, a browser extension for GitHub, and a plugin for JetBrains IDEs, providing flexibility based on user preferences.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/20063083-9fe5-40f1-b22a-f443ed11886c) and start prompting.
+## Technologies Used
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend:** React
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Styling:** Tailwind CSS
+- **AI Integration:** OpenAI API
 
-**Use your preferred IDE**
+## Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Node.js:** Ensure [Node.js](https://nodejs.org/) is installed.
+- **npm:** Ensure [npm](https://www.npmjs.com/) is installed.
 
-Follow these steps:
+### Steps
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. **Clone the Repository:**
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+   ```bash
+   git clone https://github.com/mmabiaa/code-scribe.git
+```markdown
+## Navigate to the Project Directory:
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+cd code-scribe
 ```
 
-**Edit a file directly in GitHub**
+## Install Dependencies:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm install
+```
 
-**Use GitHub Codespaces**
+## Start the Development Server:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm start
+```
 
-## What technologies are used for this project?
+This will launch the application at [http://localhost:3000](http://localhost:3000).
 
-This project is built with:
+## Usage
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Command-Line Tool:** Run `npm run generate -- <path_to_your_code>` to generate documentation for your codebase.
+- **GitHub Browser Extension:** After installation, navigate to any code file on GitHub. The Code Scribe extension will automatically generate a description of the code, accessible via the side panel.
+- **JetBrains IDE Plugin:** Open a code file in your JetBrains IDE, and Code Scribe will provide documentation features accessible through the IDE's interface.
 
-## How can I deploy this project?
+## Contributing
 
-Simply open [Lovable](https://lovable.dev/projects/20063083-9fe5-40f1-b22a-f443ed11886c) and click on Share -> Publish.
+We welcome contributions to Code Scribe! To contribute:
 
-## Can I connect a custom domain to my Lovable project?
+1. **Fork the Repository:**
 
-Yes it is!
+   - Click "Fork" at the top right corner of the repository page.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+2. **Clone Your Fork:**
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+   ```bash
+   git clone https://github.com/mmabiaa/code-scribe.git
+   ```
+
+3. **Create a New Branch:**
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+4. **Make Changes:**
+
+   - Implement your feature or fix.
+
+5. **Commit Changes:**
+
+   ```bash
+   git add .
+   git commit -m "Description of your changes"
+   ```
+
+6. **Push to Your Fork:**
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+7. **Create a Pull Request:**
+
+   - Navigate to the original repository and click "New Pull Request".
+   - Provide a clear description of your changes and submit the pull request.
+
+## License
+
+MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- **Inspiration:** Code Scribe draws inspiration from the need to streamline code documentation processes and enhance code readability.
+- **Contributors:** Special thanks to all contributors who have helped shape Code Scribe.
+- **Resources:** For more information on code documentation best practices, refer to [MkDocs](https://www.mkdocs.org/user-guide/writing-your-docs/) and [LARCH](https://arxiv.org/abs/2308.03099).
+
+## Contact
+
+- **Project Maintainer:** [mmabiaa](https://github.com/mmabiaa)
+- **Email:** [mmaabiaa@gmail.com](mailto:mmaabiaa@gmail.com)
+```
