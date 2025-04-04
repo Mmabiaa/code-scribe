@@ -36,10 +36,17 @@ const Index = () => {
           description: "Your code encountered an error during execution.",
           variant: "destructive"
         });
-      } else if (language !== 'javascript') {
+      } else if (language === 'javascript' || language === 'typescript' || language === 'json') {
+        // Full execution notification only for fully supported languages
         toast({
-          title: "Preview Mode",
-          description: `Full execution for ${language} is coming soon!`
+          title: "Execution Complete",
+          description: "Your code executed successfully."
+        });
+      } else {
+        // Simulation notice for other languages
+        toast({
+          title: "Simulation Mode",
+          description: `${language} execution is running in simulation mode.`
         });
       }
     } catch (error) {
