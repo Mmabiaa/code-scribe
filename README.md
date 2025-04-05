@@ -1,6 +1,6 @@
 # Code Scribe
 
-![Code Scribe Logo](https://path/to/logo.png)
+![Code Scribe Logo](https://github.com/Mmabiaa/code-scribe-online/blob/main/public/home.png)
 
 ## Description
 
