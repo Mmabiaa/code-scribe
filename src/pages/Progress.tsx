@@ -1,364 +1,296 @@
 
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { ChevronDown, ChevronUp, Award, Calendar, CheckCircle, BookOpen, Target, TrendingUp } from "lucide-react";
+import { ProgressIndicator } from "@/components/ui/progress";
+import { CheckCircle2, Clock, Award, BookOpen, Code, FileText } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend
+} from 'recharts';
 
-const activityData = [
-  { day: "Mon", hours: 1.2 },
-  { day: "Tue", hours: 0.8 },
-  { day: "Wed", hours: 2.1 },
-  { day: "Thu", hours: 1.5 },
-  { day: "Fri", hours: 0.9 },
-  { day: "Sat", hours: 2.3 },
-  { day: "Sun", hours: 1.7 },
+// Sample data for the charts
+const weeklyProgressData = [
+  { name: 'Mon', progress: 20 },
+  { name: 'Tue', progress: 40 },
+  { name: 'Wed', progress: 30 },
+  { name: 'Thu', progress: 70 },
+  { name: 'Fri', progress: 50 },
+  { name: 'Sat', progress: 80 },
+  { name: 'Sun', progress: 90 },
 ];
 
-const modules = [
-  {
-    id: 1,
-    title: "Getting Started with Code Documentation",
-    total: 5,
-    completed: 3,
-    progress: 60,
-  },
-  {
-    id: 2,
-    title: "Best Practices for Code Comments",
-    total: 4,
-    completed: 0,
-    progress: 0,
-  },
-  {
-    id: 3,
-    title: "Creating API Documentation",
-    total: 6,
-    completed: 0,
-    progress: 0,
-  },
-  {
-    id: 4,
-    title: "Documentation for Open Source Projects",
-    total: 5,
-    completed: 1,
-    progress: 20,
-  },
+const modulesData = [
+  { name: 'Basics', completed: 80, total: 100 },
+  { name: 'Advanced', completed: 45, total: 100 },
+  { name: 'Expert', completed: 20, total: 100 },
 ];
 
-const achievements = [
-  {
-    id: 1,
-    title: "Documentation Novice",
-    description: "Completed your first documentation module",
-    icon: Award,
-    date: "2 days ago",
-    unlocked: true,
-  },
-  {
-    id: 2,
-    title: "Consistent Learner",
-    description: "Logged in for 5 consecutive days",
-    icon: Calendar,
-    date: "Yesterday",
-    unlocked: true,
-  },
-  {
-    id: 3,
-    title: "Community Contributor",
-    description: "Posted 10 helpful responses in the community forum",
-    icon: CheckCircle,
-    date: null,
-    unlocked: false,
-    progress: 30,
-  },
-  {
-    id: 4,
-    title: "Documentation Expert",
-    description: "Complete all core documentation modules",
-    icon: BookOpen,
-    date: null,
-    unlocked: false,
-    progress: 20,
-  },
-];
+interface AchievementProps {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  progress: number;
+}
 
-const Progress = () => {
-  const [openModuleId, setOpenModuleId] = useState<number | null>(null);
-  
-  const toggleModule = (id: number) => {
-    if (openModuleId === id) {
-      setOpenModuleId(null);
-    } else {
-      setOpenModuleId(id);
-    }
-  };
-
-  const overallProgress = Math.round(
-    (modules.reduce((acc, module) => acc + module.completed, 0) / 
-    modules.reduce((acc, module) => acc + module.total, 0)) * 100
-  );
-
+const Achievement = ({ icon: Icon, title, description, progress }: AchievementProps) => {
   return (
-    <Layout 
-      title="Learning Progress" 
-      subtitle="Track your learning journey and achievements"
-    >
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Overall Learning Progress</CardTitle>
-              <CardDescription>Your documentation skills development</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                <div className="flex justify-between text-sm mb-1">
-                  <span>Documentation Mastery</span>
-                  <span>{overallProgress}%</span>
-                </div>
-                <Progress value={overallProgress} className="h-2" />
-              </div>
-              
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={activityData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="hours" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              
-              <div className="mt-4 text-center text-sm text-muted-foreground">
-                <p>Weekly learning activity (hours per day)</p>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <div className="mb-6">
-            <h2 className="text-xl font-medium mb-4">Learning Modules</h2>
-            <div className="space-y-4">
-              {modules.map((module) => (
-                <Collapsible 
-                  key={module.id}
-                  open={openModuleId === module.id}
-                  onOpenChange={() => toggleModule(module.id)}
-                >
-                  <Card>
-                    <div className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-medium">{module.title}</h3>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>{module.completed} of {module.total} lessons completed</span>
-                            <span>·</span>
-                            <span>{module.progress}%</span>
-                          </div>
-                        </div>
-                        
-                        <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="gap-1">
-                            {openModuleId === module.id ? (
-                              <>
-                                <ChevronUp className="h-4 w-4" />
-                                Hide Details
-                              </>
-                            ) : (
-                              <>
-                                <ChevronDown className="h-4 w-4" />
-                                Show Details
-                              </>
-                            )}
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                      
-                      <div className="mt-2">
-                        <Progress value={module.progress} className="h-2" />
-                      </div>
-                    </div>
-                    
-                    <CollapsibleContent>
-                      <CardContent className="pt-0 border-t">
-                        <ul className="space-y-2">
-                          {Array.from({ length: module.total }).map((_, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              {idx < module.completed ? (
-                                <CheckCircle className="h-4 w-4 text-primary" />
-                              ) : (
-                                <div className="h-4 w-4 rounded-full border border-muted-foreground/30" />
-                              )}
-                              <span className={idx < module.completed ? "" : "text-muted-foreground"}>
-                                Lesson {idx + 1}: {idx === 0 ? "Introduction" : `Advanced Concept ${idx}`}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                        
-                        <div className="mt-4">
-                          <Button className="gap-2">
-                            <BookOpen className="h-4 w-4" />
-                            {module.completed > 0 ? "Continue" : "Start"} Module
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Card>
-                </Collapsible>
-              ))}
+    <Card className="overflow-hidden">
+      <CardContent className="p-6">
+        <div className="flex items-start gap-4">
+          <div className="bg-primary/10 p-2 rounded-full">
+            <Icon className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-medium text-lg">{title}</h3>
+            <p className="text-sm text-muted-foreground mb-3">{description}</p>
+            <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+              <div 
+                className="bg-primary h-full rounded-full" 
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
+            <p className="text-xs text-muted-foreground mt-1 text-right">{progress}%</p>
           </div>
         </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const Progress = () => {
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const achievements = [
+    {
+      icon: BookOpen,
+      title: "Documentation Master",
+      description: "Complete 50 documentation exercises",
+      progress: 70
+    },
+    {
+      icon: Code,
+      title: "Code Commentator",
+      description: "Add helpful comments to 100 code snippets",
+      progress: 45
+    },
+    {
+      icon: FileText,
+      title: "README Wizard",
+      description: "Create 25 comprehensive README files",
+      progress: 20
+    },
+    {
+      icon: Award,
+      title: "Community Contributor",
+      description: "Help 30 community members with their documentation",
+      progress: 60
+    }
+  ];
+
+  const statsCards = [
+    {
+      title: "Completed Lessons",
+      value: "32",
+      description: "Out of 50 total lessons",
+      icon: CheckCircle2,
+      color: "text-green-500",
+      change: "+5 this week"
+    },
+    {
+      title: "Hours Studied",
+      value: "48",
+      description: "Total learning time",
+      icon: Clock,
+      color: "text-blue-500",
+      change: "+3.5 this week"
+    },
+    {
+      title: "Achievements",
+      value: "12",
+      description: "Badges earned so far",
+      icon: Award,
+      color: "text-amber-500",
+      change: "+2 this week"
+    }
+  ];
+
+  return (
+    <Layout title="Learning Progress" subtitle="Track your journey and achievements">
+      <Tabs 
+        defaultValue="overview" 
+        value={activeTab} 
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
+        <TabsList className="mb-6">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="achievements">Achievements</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
         
-        <div>
-          <Tabs defaultValue="achievements">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="achievements">
-                <Award className="h-4 w-4 mr-2" />
-                Achievements
-              </TabsTrigger>
-              <TabsTrigger value="stats">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Stats
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="achievements">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your Achievements</CardTitle>
-                  <CardDescription>Badges and milestones you've earned</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {achievements.map((achievement) => (
-                    <div 
-                      key={achievement.id}
-                      className={`flex items-start gap-3 p-3 rounded-lg border ${
-                        achievement.unlocked ? "bg-primary/5" : ""
-                      }`}
-                    >
-                      <div className={`p-2 rounded-full ${
-                        achievement.unlocked ? "bg-primary/20" : "bg-muted"
-                      }`}>
-                        <achievement.icon className={`h-5 w-5 ${
-                          achievement.unlocked ? "text-primary" : "text-muted-foreground"
-                        }`} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-medium">{achievement.title}</h4>
-                          {achievement.unlocked && (
-                            <Badge variant="outline" className="text-xs bg-primary/10 border-primary/20">
-                              Unlocked
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">{achievement.description}</p>
-                        {achievement.unlocked ? (
-                          <p className="text-xs text-muted-foreground mt-1">Earned {achievement.date}</p>
-                        ) : (
-                          <div className="mt-2">
-                            <div className="flex justify-between text-xs mb-1">
-                              <span>Progress</span>
-                              <span>{achievement.progress}%</span>
-                            </div>
-                            <Progress value={achievement.progress} className="h-1.5" />
-                          </div>
-                        )}
-                      </div>
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {statsCards.map((card, index) => (
+              <Card key={index}>
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">{card.title}</p>
+                      <h3 className="text-2xl font-bold">{card.value}</h3>
+                      <p className="text-xs text-muted-foreground mt-1">{card.description}</p>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="stats">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Learning Statistics</CardTitle>
-                  <CardDescription>Your activity metrics</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span>Total Learning Time</span>
-                      <span className="font-medium">12.4 hours</span>
+                    <div className={`bg-primary/10 p-2 rounded-full ${card.color}`}>
+                      <card.icon className="h-5 w-5" />
                     </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span>Lessons Completed</span>
-                      <span className="font-medium">4 of 20</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span>Quizzes Completed</span>
-                      <span className="font-medium">2</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span>Forum Posts</span>
-                      <span className="font-medium">3</span>
-                    </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span>Daily Streak</span>
-                      <span className="font-medium">5 days</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>Current Level</span>
-                      <span className="font-medium">Beginner</span>
-                    </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t">
+                    <p className="text-xs font-medium text-muted-foreground">
+                      {card.change}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+            ))}
+          </div>
           
-          <Card className="mt-6">
+          <Card>
             <CardHeader>
-              <CardTitle>Learning Goals</CardTitle>
-              <CardDescription>Set and track your objectives</CardDescription>
+              <CardTitle>Weekly Progress</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary mt-0.5" />
-                  <div>
-                    <p className="font-medium">Complete first module</p>
-                    <p className="text-xs text-muted-foreground">Achieved 2 days ago</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Target className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div>
-                    <p className="font-medium">Document a personal project</p>
-                    <p className="text-xs text-muted-foreground">In progress - 30%</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Target className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div>
-                    <p className="font-medium">Learn API documentation</p>
-                    <p className="text-xs text-muted-foreground">Not started</p>
-                  </div>
-                </li>
-              </ul>
-              
-              <Button variant="outline" className="w-full mt-4">
-                Set New Goal
-              </Button>
+            <CardContent className="p-6">
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={weeklyProgressData}
+                    margin={{
+                      top: 10,
+                      right: 30,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="progress" stroke="#6c5ce7" fill="#6c5ce7" fillOpacity={0.2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Module Completion</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-6">
+                {modulesData.map((module, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm font-medium">{module.name}</span>
+                      <span className="text-sm text-muted-foreground">{module.completed}%</span>
+                    </div>
+                    <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+                      <div 
+                        className="bg-primary h-full rounded-full" 
+                        style={{ width: `${module.completed}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="achievements" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {achievements.map((achievement, index) => (
+              <Achievement 
+                key={index}
+                icon={achievement.icon}
+                title={achievement.title}
+                description={achievement.description}
+                progress={achievement.progress}
+              />
+            ))}
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming Achievements</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="bg-muted p-2 rounded-full">
+                    <Code className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Documentation Expert</h3>
+                    <p className="text-sm text-muted-foreground">Complete 100 documentation exercises</p>
+                    <div className="w-full bg-secondary h-2 rounded-full overflow-hidden mt-2">
+                      <div 
+                        className="bg-muted-foreground h-full rounded-full" 
+                        style={{ width: "10%" }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1 text-right">10%</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="analytics" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Learning Time Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={[
+                      { category: 'Documentation', hours: 12 },
+                      { category: 'Code Comments', hours: 8 },
+                      { category: 'READMEs', hours: 15 },
+                      { category: 'API Docs', hours: 6 },
+                      { category: 'Tutorials', hours: 7 }
+                    ]}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="category" />
+                    <YAxis label={{ value: 'Hours', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="hours" fill="#6c5ce7" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </Layout>
   );
 };

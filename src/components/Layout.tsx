@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import Footer from "@/components/Footer";
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -102,9 +103,7 @@ export const Layout = ({ children, title, subtitle }: LayoutProps) => {
           </div>
         )}
         <div className="flex-1 p-4 md:p-6">{children}</div>
-        <footer className="border-t p-4 text-center text-sm text-muted-foreground">
-          <p>CodeScribe v2 - Collaborative Learning Platform &copy; {new Date().getFullYear()}</p>
-        </footer>
+        <Footer />
       </main>
     </div>
   );
