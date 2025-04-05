@@ -16,6 +16,9 @@ import Quizzes from "./pages/Quizzes";
 import Workshops from "./pages/Workshops";
 import Mentorship from "./pages/Mentorship";
 import Showcase from "./pages/Showcase";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,9 @@ const App = () => (
           <Route path="/workshops" element={<Workshops />} />
           <Route path="/mentorship" element={<Mentorship />} />
           <Route path="/showcase" element={<Showcase />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

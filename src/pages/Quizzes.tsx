@@ -4,261 +4,224 @@ import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { HelpCircle, CheckCircle, X } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Book, Award, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 
-const quizzes = [
+const quizCategories = [
   {
-    id: 1,
-    title: "Documentation Basics Quiz",
-    description: "Test your knowledge on basic documentation principles",
-    questions: 10,
-    timeEstimate: "15 min",
-    difficulty: "Beginner",
-    completed: true,
-    score: 8
+    id: "beginner",
+    name: "Beginner",
+    description: "Fundamental documentation concepts",
+    quizzes: [
+      {
+        id: 1,
+        title: "Documentation Basics",
+        description: "Learn the fundamentals of code documentation",
+        questionsCount: 10,
+        timeInMinutes: 15,
+        completed: true,
+        score: 90
+      },
+      {
+        id: 2,
+        title: "Markdown Essentials",
+        description: "Master the basics of Markdown formatting",
+        questionsCount: 12,
+        timeInMinutes: 20,
+        completed: true,
+        score: 75
+      },
+      {
+        id: 3,
+        title: "Comments Best Practices",
+        description: "Learn how to write effective code comments",
+        questionsCount: 15,
+        timeInMinutes: 25,
+        completed: false
+      }
+    ]
   },
   {
-    id: 2,
-    title: "API Documentation Best Practices",
-    description: "Evaluate your understanding of API documentation standards",
-    questions: 15,
-    timeEstimate: "25 min",
-    difficulty: "Intermediate",
-    completed: false,
-    score: null
+    id: "intermediate",
+    name: "Intermediate",
+    description: "Advanced documentation techniques",
+    quizzes: [
+      {
+        id: 4,
+        title: "API Documentation",
+        description: "Learn how to document APIs effectively",
+        questionsCount: 15,
+        timeInMinutes: 30,
+        completed: false
+      },
+      {
+        id: 5,
+        title: "Documentation Tools",
+        description: "Explore popular documentation tools and their uses",
+        questionsCount: 12,
+        timeInMinutes: 25,
+        completed: false
+      }
+    ]
   },
   {
-    id: 3,
-    title: "Advanced Documentation Tools",
-    description: "Test your knowledge of documentation generators and tools",
-    questions: 12,
-    timeEstimate: "20 min",
-    difficulty: "Advanced",
-    completed: false,
-    score: null
+    id: "advanced",
+    name: "Advanced",
+    description: "Professional documentation strategies",
+    quizzes: [
+      {
+        id: 6,
+        title: "Documentation Architecture",
+        description: "Design scalable documentation systems",
+        questionsCount: 20,
+        timeInMinutes: 40,
+        completed: false
+      }
+    ]
   }
 ];
 
-// Sample quiz questions for the modal
-const sampleQuiz = {
-  id: 2,
-  title: "API Documentation Best Practices",
-  currentQuestion: 0,
-  questions: [
-    {
-      id: 1,
-      text: "What is the primary purpose of API documentation?",
-      options: [
-        "To showcase the developer's coding skills",
-        "To explain how to use and integrate with the API",
-        "To list all possible API errors",
-        "To replace the need for customer support"
-      ],
-      correctAnswer: 1
-    },
-    {
-      id: 2,
-      text: "Which of the following is NOT typically included in API documentation?",
-      options: [
-        "Authentication methods",
-        "Endpoint descriptions",
-        "Source code of the API implementation",
-        "Request and response examples"
-      ],
-      correctAnswer: 2
-    },
-    {
-      id: 3,
-      text: "What is OpenAPI (formerly Swagger)?",
-      options: [
-        "A programming language for APIs",
-        "A specification for describing RESTful APIs",
-        "An API testing tool",
-        "A database for storing API credentials"
-      ],
-      correctAnswer: 1
-    }
-  ]
+const QuizCard = ({ quiz, onStart }) => {
+  return (
+    <Card className="flex flex-col h-full">
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-lg">{quiz.title}</CardTitle>
+          {quiz.completed && (
+            <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+              <CheckCircle2 className="h-3 w-3 mr-1" />
+              Completed
+            </Badge>
+          )}
+        </div>
+        <CardDescription>{quiz.description}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-grow">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Clock className="h-4 w-4" />
+            <span>{quiz.timeInMinutes} mins</span>
+          </div>
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Book className="h-4 w-4" />
+            <span>{quiz.questionsCount} questions</span>
+          </div>
+        </div>
+        
+        {quiz.completed && (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Score</span>
+              <span className="text-sm font-medium">{quiz.score}%</span>
+            </div>
+            <Progress value={quiz.score} className="h-2" />
+          </div>
+        )}
+      </CardContent>
+      <CardFooter>
+        {quiz.completed ? (
+          <Button variant="outline" className="w-full" onClick={() => onStart(quiz)}>
+            Review Quiz
+          </Button>
+        ) : (
+          <Button className="w-full" onClick={() => onStart(quiz)}>
+            Start Quiz
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
+  );
 };
 
-const QuizzesPage = () => {
-  const [activeQuiz, setActiveQuiz] = useState(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [answers, setAnswers] = useState({});
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [score, setScore] = useState(0);
-
-  const startQuiz = (quizId) => {
-    const quiz = quizzes.find(q => q.id === quizId);
-    if (quiz && !quiz.completed) {
-      setActiveQuiz(sampleQuiz);
-      setCurrentQuestion(0);
-      setSelectedAnswer(null);
-      setAnswers({});
-      setQuizCompleted(false);
-      setScore(0);
-    } else {
-      toast({
-        title: "Quiz already completed",
-        description: "You've already taken this quiz. View your results instead.",
-      });
-    }
-  };
-
-  const handleAnswerSelect = (answerIndex) => {
-    setSelectedAnswer(answerIndex);
-  };
-
-  const nextQuestion = () => {
-    if (selectedAnswer === null) {
-      toast({
-        title: "Please select an answer",
-        description: "You need to select an answer before proceeding.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Save the answer
-    setAnswers(prev => ({
-      ...prev,
-      [currentQuestion]: selectedAnswer
-    }));
-
-    if (currentQuestion < activeQuiz.questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
-      setSelectedAnswer(null);
-    } else {
-      // Calculate score
-      let correctAnswers = 0;
-      Object.entries({ ...answers, [currentQuestion]: selectedAnswer }).forEach(([questionIdx, answerIdx]) => {
-        if (activeQuiz.questions[parseInt(questionIdx)].correctAnswer === answerIdx) {
-          correctAnswers++;
-        }
-      });
-      
-      const finalScore = Math.round((correctAnswers / activeQuiz.questions.length) * 100);
-      setScore(finalScore);
-      setQuizCompleted(true);
-    }
-  };
-
-  const finishQuiz = () => {
+const Quizzes = () => {
+  const [selectedCategory, setSelectedCategory] = useState("beginner");
+  
+  const handleStartQuiz = (quiz) => {
     toast({
-      title: "Quiz Completed!",
-      description: `Your score: ${score}%. Great job!`,
+      title: quiz.completed ? "Quiz Review" : "Quiz Started",
+      description: quiz.completed 
+        ? `You're reviewing ${quiz.title}. Your previous score was ${quiz.score}%.` 
+        : `Starting ${quiz.title}. Good luck!`,
     });
-    setActiveQuiz(null);
-  };
-
-  const viewResults = (quizId) => {
-    const quiz = quizzes.find(q => q.id === quizId);
-    if (quiz && quiz.completed) {
-      toast({
-        title: "Quiz Results",
-        description: `You scored ${quiz.score}/10 on this quiz.`,
-      });
-    }
   };
 
   return (
     <Layout title="Quizzes & Assessments" subtitle="Test your knowledge and get instant feedback">
-      {activeQuiz ? (
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>{activeQuiz.title}</CardTitle>
-              <Badge>{quizCompleted ? "Completed" : `Question ${currentQuestion + 1} of ${activeQuiz.questions.length}`}</Badge>
-            </div>
-            {!quizCompleted && <CardDescription>Select the correct answer below</CardDescription>}
-          </CardHeader>
-          <CardContent>
-            {quizCompleted ? (
-              <div className="text-center space-y-4">
-                <div className="mb-4">
-                  <div className={`inline-flex items-center justify-center p-4 rounded-full ${score >= 70 ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                    {score >= 70 ? <CheckCircle className="h-12 w-12" /> : <HelpCircle className="h-12 w-12" />}
-                  </div>
-                </div>
-                <h3 className="text-2xl font-bold">{score}%</h3>
-                <p className="text-muted-foreground">
-                  {score >= 70 
-                    ? "Great job! You have a good understanding of this topic." 
-                    : "You might want to review this topic again."}
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="text-lg font-medium mb-4">
-                  {activeQuiz.questions[currentQuestion].text}
-                </div>
-                <RadioGroup value={selectedAnswer} onValueChange={(val) => handleAnswerSelect(parseInt(val))}>
-                  {activeQuiz.questions[currentQuestion].options.map((option, idx) => (
-                    <div key={idx} className="flex items-center space-x-2 p-2 rounded hover:bg-muted/50">
-                      <RadioGroupItem value={idx} id={`option-${idx}`} />
-                      <Label htmlFor={`option-${idx}`} className="flex-grow cursor-pointer">{option}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            {quizCompleted ? (
-              <Button onClick={finishQuiz}>Finish</Button>
-            ) : (
-              <Button onClick={nextQuestion}>
-                {currentQuestion < activeQuiz.questions.length - 1 ? "Next Question" : "Submit Quiz"}
-              </Button>
-            )}
-          </CardFooter>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quizzes.map((quiz) => (
-            <Card key={quiz.id} className="flex flex-col h-full">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{quiz.title}</CardTitle>
-                  <Badge variant={quiz.completed ? "secondary" : "outline"}>
-                    {quiz.completed ? "Completed" : quiz.difficulty}
-                  </Badge>
-                </div>
-                <CardDescription>{quiz.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <div className="flex justify-between text-sm text-muted-foreground mb-4">
-                  <span>{quiz.questions} questions</span>
-                  <span>{quiz.timeEstimate}</span>
-                </div>
-                {quiz.completed && (
-                  <div className="mt-2 p-2 bg-muted rounded-md flex items-center justify-between">
-                    <span className="text-sm font-medium">Your score:</span>
-                    <span className="font-bold">{quiz.score}/10</span>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter>
-                {quiz.completed ? (
-                  <Button variant="outline" className="w-full" onClick={() => viewResults(quiz.id)}>
-                    View Results
-                  </Button>
-                ) : (
-                  <Button className="w-full" onClick={() => startQuiz(quiz.id)}>
-                    Start Quiz
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
-          ))}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <Award className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-medium">Your Progress</h2>
         </div>
-      )}
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl">3/8</CardTitle>
+              <CardDescription>Quizzes Completed</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Progress value={37.5} className="h-2" />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl">82%</CardTitle>
+              <CardDescription>Average Score</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Progress value={82} className="h-2" />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl">4</CardTitle>
+              <CardDescription>Badges Earned</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <Badge className="h-8 w-8 rounded-full p-0 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4" />
+                </Badge>
+                <Badge className="h-8 w-8 rounded-full p-0 flex items-center justify-center">
+                  <Book className="h-4 w-4" />
+                </Badge>
+                <Badge className="h-8 w-8 rounded-full p-0 flex items-center justify-center">
+                  <Award className="h-4 w-4" />
+                </Badge>
+                <Badge className="h-8 w-8 rounded-full p-0 flex items-center justify-center">
+                  <AlertCircle className="h-4 w-4" />
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      
+      <Tabs defaultValue={selectedCategory} onValueChange={setSelectedCategory}>
+        <TabsList className="mb-4">
+          {quizCategories.map(category => (
+            <TabsTrigger key={category.id} value={category.id}>
+              {category.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        
+        {quizCategories.map(category => (
+          <TabsContent key={category.id} value={category.id}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {category.quizzes.map(quiz => (
+                <QuizCard key={quiz.id} quiz={quiz} onStart={handleStartQuiz} />
+              ))}
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
     </Layout>
   );
 };
 
-export default QuizzesPage;
+export default Quizzes;
