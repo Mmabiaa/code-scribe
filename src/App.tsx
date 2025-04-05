@@ -12,6 +12,10 @@ import Collaborate from "./pages/Collaborate";
 import Assistant from "./pages/Assistant";
 import Resources from "./pages/Resources";
 import Progress from "./pages/Progress";
+import Quizzes from "./pages/Quizzes";
+import Workshops from "./pages/Workshops";
+import Mentorship from "./pages/Mentorship";
+import Showcase from "./pages/Showcase";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +33,10 @@ const App = () => (
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/quizzes" element={<Quizzes />} />
+          <Route path="/workshops" element={<Workshops />} />
+          <Route path="/mentorship" element={<Mentorship />} />
+          <Route path="/showcase" element={<Showcase />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
