@@ -28,7 +28,7 @@ const Assistant = () => {
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
-    const userMessage = {
+    const userMessage: Message = {
       id: messages.length + 1,
       content: newMessage,
       sender: "user",
@@ -40,7 +40,7 @@ const Assistant = () => {
 
     // Simulate AI response
     setTimeout(() => {
-      const aiResponse = {
+      const aiResponse: Message = {
         id: messages.length + 2,
         content: "I'm analyzing your code documentation. Based on best practices, I suggest adding more context to your function descriptions and including parameter types in your comments.",
         sender: "assistant",
